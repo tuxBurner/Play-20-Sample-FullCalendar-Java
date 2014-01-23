@@ -18,7 +18,7 @@ import java.util.*;
 
 public class Application extends Controller {
 
-    final static Form<Event> eventForm = form(Event.class);
+    final static Form<Event> eventForm = Form.form(Event.class);
 
     /**
      * Checks if events ends the same day which starts
@@ -95,7 +95,7 @@ public class Application extends Controller {
      * @return Result
      */
     public static Result add() {
-        Form<Event> eventForm = form(Event.class).bindFromRequest();
+        Form<Event> eventForm = Form.form(Event.class).bindFromRequest();
         if (eventForm.hasErrors()) {
             return badRequest(formNew.render(eventForm));
         }
@@ -119,7 +119,7 @@ public class Application extends Controller {
      */
     public static Result edit(Long id) {
         Event event = Event.find.byId(id);
-        Form<Event> eventForm = form(Event.class).fill(event);
+        Form<Event> eventForm = Form.form(Event.class).fill(event);
         return ok(formEdit.render(id, eventForm, event));
     }
 
@@ -130,7 +130,7 @@ public class Application extends Controller {
      * @return Result
      */
     public static Result update(Long id) {
-        Form<Event> eventForm = form(Event.class).bindFromRequest();
+        Form<Event> eventForm = Form.form(Event.class).bindFromRequest();
         if (eventForm.hasErrors()) {
             return badRequest(formEdit.render(id, eventForm, Event.find.byId(id)));
         }
@@ -161,7 +161,7 @@ public class Application extends Controller {
      * @return Result
      */
     public static Result addByAjax() {
-        Form<Event> eventForm = form(Event.class).bindFromRequest();
+        Form<Event> eventForm = Form.form(Event.class).bindFromRequest();
         Event newEvent = eventForm.get();
         newEvent.endsSameDay = endsSameDay(newEvent.start, newEvent.end);
         newEvent.save();
@@ -184,14 +184,14 @@ public class Application extends Controller {
      */
     public static Result move() {
 
-        Long id = Long.valueOf(form().bindFromRequest().get("id"));
-        int dayDelta = Integer.parseInt(form().bindFromRequest().get("dayDelta"));
-        int minuteDelta = Integer.parseInt(form().bindFromRequest().get("minuteDelta"));
+        Long id = Long.valueOf(Form.form().bindFromRequest().get("id"));
+        int dayDelta = Integer.parseInt(Form.form().bindFromRequest().get("dayDelta"));
+        int minuteDelta = Integer.parseInt(Form.form().bindFromRequest().get("minuteDelta"));
 
         Event event = Event.find.byId(id);
         event.start = new DateTime(event.start).plusDays(dayDelta).plusMinutes(minuteDelta).toDate();
         event.end = new DateTime(event.end).plusDays(dayDelta).plusMinutes(minuteDelta).toDate();
-        event.allDay = Boolean.valueOf(form().bindFromRequest().get("allDay"));
+        event.allDay = Boolean.valueOf(Form.form().bindFromRequest().get("allDay"));
         event.endsSameDay = endsSameDay(event.start, event.end);
         event.update();
 
@@ -208,9 +208,9 @@ public class Application extends Controller {
      */
     public static Result resize() {
 
-        Long id = Long.valueOf(form().bindFromRequest().get("id"));
-        int dayDelta = Integer.parseInt(form().bindFromRequest().get("dayDelta"));
-        int minuteDelta = Integer.parseInt(form().bindFromRequest().get("minuteDelta"));
+        Long id = Long.valueOf(Form.form().bindFromRequest().get("id"));
+        int dayDelta = Integer.parseInt(Form.form().bindFromRequest().get("dayDelta"));
+        int minuteDelta = Integer.parseInt(Form.form().bindFromRequest().get("minuteDelta"));
 
         Event event = Event.find.byId(id);
         event.end = new DateTime(event.end).plusDays(dayDelta).plusMinutes(minuteDelta).toDate();
